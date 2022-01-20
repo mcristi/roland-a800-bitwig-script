@@ -12,25 +12,23 @@ The namings of the buttons/knobs/faders are the same as the ones from A-Pro Edit
 - L6 = play/continue play if paused
 - L7 = pause
 - L8 = record new clip in the next available slot (session view)
-
+<br />
 
 - P1 (hold pedal) = record new clip in the next available slot (session view)
-
+<br />
 
 - B1 = undo
 - B2 = quantize selected clip
 - B3 = toggle clip overdub & clip automation write 
 - B4 = toggle metronome
-
+<br />
 
 - R1 - R8 = device macros
 - R9 = cue volume
-
+<br />
 
 - S1 - S8 = track volume (volumes will top 0dB)
 - S9 = master volume
-
-
 
 #### Different behavior depending on the selected CTRL Map
 The mappings can be changed from A-PRO on the fly (see A-PRO manual)
@@ -38,6 +36,7 @@ The mappings can be changed from A-PRO on the fly (see A-PRO manual)
 - A1 - A8 = free to map via Bitwig mapping mechanism (`17 Bitwig FREE.mid`)
 - A1 - A8 = send notes to drum rack (`18 Bitwig DRUMS.mid`)
 - A1 - A8 = select and arm track (`19 Bitwig TRACKS.mid`)
+
 
 ### Workflow
 
