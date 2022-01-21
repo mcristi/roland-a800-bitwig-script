@@ -27,7 +27,7 @@ The namings of the buttons/knobs/faders are the same as the ones from A-Pro Edit
 - R9 = cue volume
 <br />
 
-- S1 - S8 = track volume (volumes will top 0dB)
+- S1 - S8 = track volume
 - S9 = master volume
 
 #### Different behavior depending on the selected CTRL Map

@@ -394,8 +394,7 @@ function setCueVolume(value) {
 }
 
 function setTrackVolume(trackIndex, value) {
-    // NOTE: set(value, 161) will top the fader to 0dB
-    trackBank.getChannel(trackIndex).getVolume().set(value, 161);
+    trackBank.getChannel(trackIndex).getVolume().set(value, 128);
 }
 
 function recordClip() {
