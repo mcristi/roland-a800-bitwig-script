@@ -75,13 +75,14 @@ function init() {
 
     transport.isPlaying().markInterested();
     for (let i = 0; i < GRID_SIZE; i++) {
-        cursorTrack.clipLauncherSlotBank().getItemAt(i).hasContent().markInterested();
-        cursorTrack.clipLauncherSlotBank().getItemAt(i).isRecording().markInterested();
-        cursorTrack.clipLauncherSlotBank().getItemAt(i).isPlaying().markInterested();
         sceneBank.getScene(i).exists().markInterested();
-    }
-    for (let i = 0; i < GRID_SIZE; i++) {
-        trackBank.getTrack(i).trackType().markInterested();
+        trackBank.getItemAt(i).getArm().markInterested();
+        trackBank.getItemAt(i).trackType().markInterested();
+        for (let j = 0; j < GRID_SIZE; j++) {
+            trackBank.getItemAt(i).clipLauncherSlotBank().getItemAt(j).hasContent().markInterested();
+            trackBank.getItemAt(i).clipLauncherSlotBank().getItemAt(j).isRecording().markInterested();
+            trackBank.getItemAt(i).clipLauncherSlotBank().getItemAt(j).isPlaying().markInterested();
+        }
     }
 
     // Create 16 NoteInputs + Omni
@@ -397,38 +398,58 @@ function setTrackVolume(trackIndex, value) {
     trackBank.getChannel(trackIndex).getVolume().set(value, 128);
 }
 
-function recordClip() {
-    let slotBank = cursorTrack.clipLauncherSlotBank();
-
-    let isAnyRecordingItem = false;
+function recordClip() {3
+    // get armed tracks
+    const slotBanks = [];
     for (let i = 0; i < GRID_SIZE; i++) {
-        let isRecording = slotBank.getItemAt(i).isRecording().get();
-        if (isRecording) {
-            slotBank.getItemAt(i).launch();
-            slotBank.getItemAt(i).select();
-            isAnyRecordingItem = true;
-            i = GRID_SIZE;
+        const track = trackBank.getItemAt(i);
+        if(track.getArm().get()) {
+            const slotBank = track.clipLauncherSlotBank();
+            slotBanks.push(slotBank);
         }
     }
 
-    if (!isAnyRecordingItem) {
-        for (let i = 0; i < GRID_SIZE; i++) {
-            let hasContent = slotBank.getItemAt(i).hasContent().get();
-            if (!hasContent) {
-                let sceneExists = sceneBank.getScene(i).exists().get();
-                if (sceneExists) {
-                    slotBank.record(i);
-                    slotBank.getItemAt(i).select();
-                } else {
-                    host.showPopupNotification('No more scenes');
-                }
+    if (!slotBanks.length) {
+        showPopup('No tracks armed!');
+    }
 
-                i = GRID_SIZE;
+    // create new clips on each armed tracks
+    slotBanks.forEach(slotBank => {
+        let isAnyRecordingItem = false;
+        for (let i = 0; i < GRID_SIZE; i++) {
+            let isRecording = slotBank.getItemAt(i).isRecording().get();
+            if (isRecording) {
+                slotBank.getItemAt(i).launch();
+                slotBank.getItemAt(i).select();
+                isAnyRecordingItem = true;
+
+                i = GRID_SIZE; // stop the loop
             }
         }
-    }
+
+        if (!isAnyRecordingItem) {
+            for (let i = 0; i < GRID_SIZE; i++) {
+                let hasContent = slotBank.getItemAt(i).hasContent().get();
+                if (!hasContent) {
+                    let sceneExists = sceneBank.getScene(i).exists().get();
+                    if (sceneExists) {
+                        slotBank.record(i);
+                        slotBank.getItemAt(i).select();
+                    } else {
+                        showPopup('No more scenes');
+                    }
+
+                    i = GRID_SIZE; // stop the loop
+                }
+            }
+        }
+    });
 }
 
 function quantize() {
     cursorClip.quantize(1.0);
+}
+
+function showPopup(message) {
+    host.showPopupNotification(message);
 }
